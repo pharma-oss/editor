@@ -15,7 +15,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import SimpleSelectEditor from 'editors/simpleSelectEditor.js';
+import ReactSelectEditor from 'editors/reactSelectEditor.js';
 
 // Redux functions
 const mapStateToProps = state => {
@@ -25,7 +25,6 @@ const mapStateToProps = state => {
 };
 
 class ConnectedLinkedCodeListEditor extends React.Component {
-
     getLinkableCodelists = (type) => {
         let linkedCodeListType;
         if (type === 'decoded') {
@@ -34,13 +33,16 @@ class ConnectedLinkedCodeListEditor extends React.Component {
             linkedCodeListType = 'decoded';
         }
         // Get list of codelists with decodes for enumeration codelist and vice versa for linked codelist selection;
-        return Object.keys(this.props.codeLists).filter( codeListOid => {
+        return Object.keys(this.props.codeLists).filter(codeListOid => {
             return this.props.codeLists[codeListOid].codeListType === linkedCodeListType;
-        }).map( codeListOid => {
-            if (this.props.codeLists[codeListOid].linkedCodeListOid !== undefined) {
-                return {[this.props.codeLists[codeListOid].oid]: this.props.codeLists[codeListOid].name + ' (Linked)'};
+        }).map(codeListOid => {
+            if (this.props.codeLists[codeListOid].linkedCodeListOid !== undefined && this.props.row.oid !== this.props.codeLists[this.props.codeLists[codeListOid].linkedCodeListOid].oid) {
+                return {
+                    value: this.props.codeLists[codeListOid].oid,
+                    label: this.props.codeLists[codeListOid].name + ' (Linked to ' + this.props.codeLists[this.props.codeLists[codeListOid].linkedCodeListOid].name + ')'
+                };
             } else {
-                return {[this.props.codeLists[codeListOid].oid]: this.props.codeLists[codeListOid].name};
+                return { value: this.props.codeLists[codeListOid].oid, label: this.props.codeLists[codeListOid].name };
             }
         });
     }
@@ -59,21 +61,21 @@ class ConnectedLinkedCodeListEditor extends React.Component {
             this.props.onUpdate(this.props.defaultValue);
         }
         return (
-            <SimpleSelectEditor
+            <ReactSelectEditor
+                handleChange={this.handleChange}
                 options={this.getLinkableCodelists(this.props.row.codeListType)}
-                optional={true}
-                onUpdate={this.handleChange}
-                autoFocus={true}
+                extensible={false}
+                value={this.props.codeLists[this.props.row.oid].linkedCodeListOid || ''}
             />
         );
     }
 }
 
 ConnectedLinkedCodeListEditor.propTypes = {
-    codeLists    : PropTypes.object.isRequired,
-    defaultValue : PropTypes.string.isRequired,
-    row          : PropTypes.object.isRequired,
-    onUpdate     : PropTypes.func
+    codeLists: PropTypes.object.isRequired,
+    defaultValue: PropTypes.string.isRequired,
+    row: PropTypes.object.isRequired,
+    onUpdate: PropTypes.func
 };
 
 const LinkedCodeListEditor = connect(mapStateToProps)(ConnectedLinkedCodeListEditor);
