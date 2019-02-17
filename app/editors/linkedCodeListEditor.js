@@ -15,7 +15,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import SimpleSelectEditor from 'editors/simpleSelectEditor.js';
+import ReactSelectEditor from 'editors/reactSelectEditor.js';
 import {
     openModal,
     updateCodeList,
@@ -49,10 +49,13 @@ class ConnectedLinkedCodeListEditor extends React.Component {
         return Object.keys(this.props.codeLists).filter(codeListOid => {
             return this.props.codeLists[codeListOid].codeListType === linkedCodeListType;
         }).map(codeListOid => {
-            if (this.props.codeLists[codeListOid].linkedCodeListOid !== undefined) {
-                return { [this.props.codeLists[codeListOid].oid]: this.props.codeLists[codeListOid].name + ' (Linked)' };
+            if (this.props.codeLists[codeListOid].linkedCodeListOid !== undefined && this.props.row.oid !== this.props.codeLists[this.props.codeLists[codeListOid].linkedCodeListOid].oid) {
+                return {
+                    value: this.props.codeLists[codeListOid].oid,
+                    label: this.props.codeLists[codeListOid].name + ' (Linked to ' + this.props.codeLists[this.props.codeLists[codeListOid].linkedCodeListOid].name + ')'
+                };
             } else {
-                return { [this.props.codeLists[codeListOid].oid]: this.props.codeLists[codeListOid].name };
+                return { value: this.props.codeLists[codeListOid].oid, label: this.props.codeLists[codeListOid].name };
             }
         });
     }
@@ -120,11 +123,11 @@ class ConnectedLinkedCodeListEditor extends React.Component {
             this.props.onUpdate(this.props.defaultValue);
         }
         return (
-            <SimpleSelectEditor
+            <ReactSelectEditor
+                handleChange={this.handleChange}
                 options={this.getLinkableCodelists(this.props.row.codeListType)}
-                optional={true}
-                onUpdate={this.handleChange}
-                autoFocus={true}
+                extensible={false}
+                value={this.props.codeLists[this.props.row.oid].linkedCodeListOid || ''}
             />
         );
     }
