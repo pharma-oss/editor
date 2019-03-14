@@ -185,6 +185,7 @@ const codeLists = {
     linkedCodeList: {
         text: 'Linked Codelist',
         width: '10%',
+        editColumnClassName: 'overflowBSTCell',
         tdStyle: { whiteSpace: 'pre-wrap' },
         thStyle: { whiteSpace: 'normal' },
     },
@@ -192,6 +193,7 @@ const codeLists = {
         text: 'Standard',
         hidden: false,
         width: '15%',
+        editColumnClassName: 'overflowBSTCell',
         tdStyle: { whiteSpace: 'normal' },
         thStyle: { whiteSpace: 'normal' }
     },
@@ -216,6 +218,7 @@ const codedValues = {
     },
     value: {
         text: 'Coded Value',
+        editColumnClassName: 'overflowBSTCell',
         tdStyle: { whiteSpace: 'pre-wrap', width: '30px', overflow: 'inherit !important' },
         thStyle: { whiteSpace: 'normal', width: '30px' },
     },

@@ -104,7 +104,7 @@ class ConnectedCodeListStandardEditor extends React.Component {
                 });
             }
         } else if (name === 'codeList') {
-            this.setState({ standardCodeListOid: updateObj });
+            this.setState({ standardCodeListOid: updateObj.value });
         }
     }
 
@@ -207,4 +207,4 @@ ConnectedCodeListStandardEditor.propTypes = {
 };
 
 const CodeListStandardEditor = connect(mapStateToProps)(ConnectedCodeListStandardEditor);
-export default withStyles(styles)(CodeListStandardEditor);
+export default withStyles(styles, { withTheme: true })(CodeListStandardEditor);
