@@ -156,7 +156,7 @@ const codeLists = {
     },
     name: {
         text: 'Name',
-        width: '20%',
+        width: '30%',
         hidden: false,
         tdStyle: { whiteSpace: 'pre-wrap' },
         thStyle: { whiteSpace: 'normal' }
@@ -184,7 +184,7 @@ const codeLists = {
     },
     linkedCodeList: {
         text: 'Linked Codelist',
-        width: '10%',
+        width: '15%',
         editColumnClassName: 'overflowBSTCell',
         tdStyle: { whiteSpace: 'pre-wrap' },
         thStyle: { whiteSpace: 'normal' },
@@ -192,7 +192,7 @@ const codeLists = {
     standardData: {
         text: 'Standard',
         hidden: false,
-        width: '15%',
+        width: '20%',
         editColumnClassName: 'overflowBSTCell',
         tdStyle: { whiteSpace: 'normal' },
         thStyle: { whiteSpace: 'normal' }

@@ -151,9 +151,20 @@ class ConnectedCodeListStandardEditor extends React.Component {
         if (this.state.standard !== undefined) {
             standardOid = this.state.standard.oid;
         }
+        let stdCodeListValue;
+        if (this.state.standardCodeListOid) {
+            stdCodeListValue = {
+                value: this.state.standardCodeListOid,
+                label: this.state.standard.codeLists[this.state.standardCodeListOid].name,
+            };
+        } else {
+            stdCodeListValue = { value: '' };
+        }
 
         return (
-            <React.Fragment>
+            <div
+                onKeyDown={this.onKeyDown}
+            >
                 {(this.state.standardList.length === 0) ? (
                     <div>There are no Controlled Terminologies assigned to this study.</div>
                 ) : (
@@ -178,7 +189,7 @@ class ConnectedCodeListStandardEditor extends React.Component {
                                     ) : (
                                         <ReactSelectEditor
                                             handleChange={this.handleChange('codeList')}
-                                            value={this.state.standardCodeListOid}
+                                            value={stdCodeListValue}
                                             options={this.state.codeListList}
                                             extensible={false}
                                         />
@@ -192,7 +203,7 @@ class ConnectedCodeListStandardEditor extends React.Component {
                     </Grid>
                 )
                 }
-            </React.Fragment>
+            </div>
         );
     }
 }

@@ -19,6 +19,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 // import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+// import { FixedSizeList as List } from 'react-window';
+// import AutoSizer from 'react-virtualized-auto-sizer';
 import CancelIcon from '@material-ui/icons/Cancel';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
@@ -31,6 +33,7 @@ const styles = theme => ({
     input: {
         display: 'flex',
         padding: 0,
+        whiteSpace: 'normal',
     },
     valueContainer: {
         display: 'flex',
@@ -56,6 +59,7 @@ const styles = theme => ({
         marginTop: theme.spacing.unit,
         left: 0,
         right: 0,
+        minWidth: '100%',
     },
     divider: {
         height: theme.spacing.unit * 2,
@@ -104,6 +108,7 @@ function Option (props) {
             component="div"
             style={{
                 fontWeight: props.isSelected ? 500 : 400,
+                whiteSpace: 'normal',
             }}
             {...props.innerProps}
         >
@@ -152,11 +157,48 @@ function MultiValue (props) {
 
 function Menu (props) {
     return (
-        <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
+        <Paper
+            square
+            className={props.selectProps.classes.paper}
+            {...props.innerProps}
+        >
             {props.children}
         </Paper>
     );
 }
+/*
+const MenuList = props => {
+    const rows = props.children;
+    const rowRenderer = ({ index, style }) => (
+        <div style={style}>{rows[index]}</div>
+    );
+
+    return (
+        <AutoSizer disableHeight style={{ display: 'inline-block' }}>
+            {({ width }) => {
+                let calculatedWidth = width;
+                const { minWidth, maxWidth } = props.selectProps;
+                if (minWidth !== undefined) {
+                    calculatedWidth = Math.max(minWidth, width);
+                }
+                if (maxWidth !== undefined) {
+                    calculatedWidth = Math.min(maxWidth, calculatedWidth);
+                }
+                return (
+                    <List
+                        height={300}
+                        width={calculatedWidth}
+                        itemSize={40}
+                        itemCount={rows.length || 0}
+                    >
+                        {rowRenderer}
+                    </List>
+                );
+            }}
+        </AutoSizer>
+    );
+};
+*/
 
 const components = {
     Control,
@@ -172,7 +214,11 @@ const components = {
 class ReactSelectEditor extends React.Component {
     handleChange = (type) => value => {
         if (type === 'single') {
-            this.props.handleChange(value);
+            if (value !== null) {
+                this.props.handleChange(value);
+            } else {
+                this.props.handleChange({ value: '', label: '' });
+            }
         } else {
             this.setState({
                 multi: value,
@@ -182,6 +228,12 @@ class ReactSelectEditor extends React.Component {
 
     cancel = () => {
         this.props.handleChange(this.props.value);
+    }
+
+    onKeyDown = (event) => {
+        if (this.props.closeOnEscape && (event.key === 'Escape' || event.keyCode === 27)) {
+            this.cancel();
+        }
     }
 
     render () {
@@ -207,7 +259,7 @@ class ReactSelectEditor extends React.Component {
                 onChange={this.handleChange('single')}
                 placeholder={this.props.label}
                 autoFocus
-                isMulti={this.props.multiSelect}
+                isClearable
             />
         );
     }
@@ -218,10 +270,13 @@ ReactSelectEditor.propTypes = {
     options: PropTypes.array.isRequired,
     handleChange: PropTypes.func.isRequired,
     extensible: PropTypes.bool,
-    value: PropTypes.string,
+    value: PropTypes.object,
     optional: PropTypes.bool,
     label: PropTypes.string,
     multiSelect: PropTypes.bool,
+    minWidth: PropTypes.number,
+    maxWidth: PropTypes.number,
+    closeOnEscape: PropTypes.bool,
 };
 
 export default withStyles(styles, { withTheme: true })(ReactSelectEditor);

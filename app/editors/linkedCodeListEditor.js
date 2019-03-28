@@ -60,7 +60,8 @@ class ConnectedLinkedCodeListEditor extends React.Component {
         });
     }
 
-    handleChange = (selectedCodeListOid) => {
+    handleChange = (selectedOption) => {
+        const selectedCodeListOid = selectedOption.value;
         // tell bootstrap table to exit editing cell
         this.props.onUpdate(this.props.defaultValue);
         if (selectedCodeListOid === undefined) {
@@ -122,12 +123,35 @@ class ConnectedLinkedCodeListEditor extends React.Component {
         if (this.props.row.codeListType !== 'decoded' && this.props.row.codeListType !== 'enumerated') {
             this.props.onUpdate(this.props.defaultValue);
         }
+        const linkedCodeListOid = this.props.codeLists[this.props.row.oid].linkedCodeListOid;
+        let value;
+        if (linkedCodeListOid) {
+            value = {
+                value: linkedCodeListOid,
+                label: this.props.codeLists[linkedCodeListOid].name,
+            };
+        } else {
+            value = { value: '' };
+        }
+
+        let options = this.getLinkableCodelists(this.props.row.codeListType);
+        let minWidth = options.reduce((maxLength, option) => {
+            if (maxLength < option.label.length * 16) {
+                return option.label.length * 16;
+            } else {
+                return maxLength;
+            }
+        }, 0);
+
         return (
             <ReactSelectEditor
                 handleChange={this.handleChange}
-                options={this.getLinkableCodelists(this.props.row.codeListType)}
+                options={options}
                 extensible={false}
-                value={this.props.codeLists[this.props.row.oid].linkedCodeListOid || ''}
+                value={value}
+                maxWidth={350}
+                minWidth={minWidth}
+                closeOnEscape={true}
             />
         );
     }

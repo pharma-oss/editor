@@ -27,26 +27,37 @@ const mapStateToProps = state => {
 };
 
 class ConnectedCodedValueEditor extends React.Component {
+    handleChange = updateObj => {
+        this.props.onUpdate(updateObj.value);
+    }
+
     render () {
         let stdCodeList = this.props.row.stdCodeList;
         let codeList = this.props.row.codeList;
         if (stdCodeList !== undefined && this.props.enableSelectForStdCodedValues) {
             let stdCodeListData = getCodeListData(stdCodeList).codeListTable;
             let existingValues = getCodedValuesAsArray(codeList);
-            let options = stdCodeListData
+            let value = { value: this.props.defaultValue, label: this.props.defaultValue };
+            let options = [];
+            stdCodeListData
                 .filter(item => (!existingValues.includes(item.value) || item.value === this.props.defaultValue))
-                .map(item => ({
-                    value: item.value,
-                    label: item.value + ' (' + item.decode + ')',
-                }));
+                .forEach(item => {
+                    options.push({
+                        value: item.value,
+                        label: item.value + ' (' + item.decode + ')',
+                    });
+                    if (item.value === this.props.defaultValue) {
+                        value = { value: item.value, label: item.value + ' (' + item.decode + ')' };
+                    }
+                });
             // If current value is not from the standard codelist, still include it
             if (!getCodedValuesAsArray(stdCodeList).includes(this.props.defaultValue)) {
                 options.push({ value: this.props.defaultValue, label: this.props.defaultValue });
             }
             return (
                 <ReactSelectEditor
-                    handleChange={ this.props.onUpdate }
-                    value={this.props.defaultValue}
+                    handleChange={this.handleChange}
+                    value={value}
                     options={options}
                     extensible={stdCodeList.codeListExtensible === 'Yes'}
                 />

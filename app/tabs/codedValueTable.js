@@ -296,7 +296,6 @@ class ConnectedCodedValueTable extends React.Component {
                 const codeList = this.props.codeLists[this.props.codeListOid];
                 // Check if the same value already exists in the codelist;
                 if (getCodedValuesAsArray(codeList).includes(cellValue)) {
-                    // TODO Warn users  that coded Value already exists in the codelist;
                     return false;
                 }
                 if (codeList.alias !== undefined &&
